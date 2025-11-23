@@ -10,6 +10,7 @@ export default function HomePage() {
   const techniques = [
     { key: 'zero-shot', label: 'Zero-shot Prompting', path: '/zero-shot' },
     { key: 'few-shot', label: 'Few-shot Prompting', path: '/few-shot' },
+    { key: 'chain-of-thought', label: "Chain-of-Thought Prompting", path: '/chain-of-thought'}
     // Add more techniques here
   ];
 
