@@ -1,26 +1,66 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Example custom styling for the message box and cards */
+.app-header {
+  @apply flex flex-col items-center justify-center text-center py-20;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.title-large {
+  @apply text-4xl font-extrabold tracking-tight mb-6;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* message input wrapper style */
+.message-box {
+  @apply w-full max-w-3xl bg-gray-100 rounded-lg p-4 flex items-center gap-3;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.message-input {
+  @apply flex-1 bg-transparent outline-none resize-none text-base;
+}
+
+/* technique button style */
+.technique-btn {
+  @apply border border-gray-300 rounded-full px-4 py-2 text-sm hover:shadow-md transition;
+}
+
+.technique-btn.active {
+  @apply bg-blue-600 text-white border-blue-600 shadow;
+}
+
+/* Chat layout */
+.chat-layout {
+  @apply min-h-screen bg-white flex flex-col;
+}
+
+.chat-container {
+  @apply flex-1 min-w-full mx-auto grid grid-cols-3 gap-6 p-8 m-8;
+}
+
+/* left column - reasoning / output */
+.output-card {
+  @apply col-span-2 bg-white border border-gray-200 rounded-lg p-6 shadow-sm;
+}
+
+/* right column - technique card / info */
+.tech-card {
+  @apply col-span-1 bg-gray-50 border border-gray-200 rounded-lg p-6;
+}
+
+/* small meta */
+.meta {
+  @apply text-xs text-gray-500 mt-3;
+}
+
+/* back button */
+.back-btn {
+  @apply inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm text-gray-700 hover:bg-gray-100;
+}
+
+/* reasoning block */
+.reasoning-step {
+  @apply bg-gray-50 border border-gray-100 rounded p-3 mb-3 text-sm;
+}
+
+.final-answer {
+  @apply bg-blue-50 border border-blue-100 rounded p-4 mt-4 font-medium;
 }
