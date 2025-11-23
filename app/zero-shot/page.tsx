@@ -10,7 +10,7 @@ type Output = {
   raw?: string;
 };
 
-export default function ChatPage() {
+export default function ZeroShotPage() {
   const router = useRouter();
   const [inputText, setInputText] = useState('');
   const [tech, setTech] = useState<string | null>(null);
