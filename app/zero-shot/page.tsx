@@ -18,12 +18,6 @@ export default function ChatPage() {
   const [result, setResult] = useState<Output | null>(null);
   const [promptShown, setPromptShown] = useState<string | null>(null);
 
-  const TECHNIQUE_LABELS: Record<string, string> = {
-    zero_shot: 'Zero-shot',
-    few_shot: 'Few-shot',
-    cot: 'Chain-of-Thought',
-  };
-
   useEffect(() => {
     const storedInput = sessionStorage.getItem('demo_input') ?? '';
     const storedTech = sessionStorage.getItem('demo_tech');
@@ -91,9 +85,6 @@ export default function ChatPage() {
     }
   };
 
-  // resolve human-friendly label for the technique
-  const techniqueLabel = tech ? (TECHNIQUE_LABELS[tech] ?? tech) : '';
-
   return (
     <div className="chat-layout">
       <div className="px-6 py-4 flex items-center gap-4">
@@ -132,7 +123,7 @@ export default function ChatPage() {
         </div>
 
         <div className="tech-card">
-          <h3 className="text-lg font-semibold">{techniqueLabel}</h3>
+          <h3 className="text-lg font-semibold">Zero-shot Prompt</h3>
 
           <div className="mt-4 text-sm">
             <div className="font-medium">Input</div>
