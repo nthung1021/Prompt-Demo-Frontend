@@ -94,10 +94,10 @@ export default function ChatPage() {
 
       <div className="chat-container">
         <div className="output-card">
-          <h3 className="text-lg font-semibold mb-4">Step-by-step reasoning & final answer</h3>
+          <h3 className="text-lg font-semibold mb-4">Final answer</h3>
 
           {!result && !loading && (
-            <div className="text-sm text-gray-600">Click "Run" to produce the answer. The left shows step-by-step reasoning (if any) and the final answer.</div>
+            <div className="text-sm text-gray-600">Click "Run" to produce the answer. The left shows the final answer.</div>
           )}
 
           {loading && <div className="mt-4 text-sm text-gray-500">Generating... (may take a few seconds)</div>}
@@ -123,7 +123,7 @@ export default function ChatPage() {
         </div>
 
         <div className="tech-card">
-          <h3 className="text-lg font-semibold">Zero-shot Prompt</h3>
+          <h3 className="text-lg font-semibold">Zero-shot Prompting Demo</h3>
 
           <div className="mt-4 text-sm">
             <div className="font-medium">Input</div>
