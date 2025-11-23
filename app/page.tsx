@@ -5,12 +5,15 @@ import { useRouter } from 'next/navigation';
 export default function HomePage() {
   const router = useRouter();
 
-  const go = (path: string) => router.push(path);
+  const go = (tech: string, path: string) => {
+    sessionStorage.setItem("demo_tech", tech);
+    router.push(path);
+  };
 
   const techniques = [
-    { key: 'zero-shot', label: 'Zero-shot Prompting', path: '/zero-shot' },
-    { key: 'few-shot', label: 'Few-shot Prompting', path: '/few-shot' },
-    { key: 'chain-of-thought', label: "Chain-of-Thought Prompting", path: '/chain-of-thought'}
+    { key: 'zero_shot', label: 'Zero-shot Prompting', path: '/zero-shot' },
+    { key: 'few_shot', label: 'Few-shot Prompting', path: '/few-shot' },
+    { key: 'chain_of_thought', label: "Chain-of-Thought Prompting", path: '/chain-of-thought'}
     // Add more techniques here
   ];
 
@@ -23,7 +26,7 @@ export default function HomePage() {
           <div
             key={t.key}
             className="p-6 border rounded-xl shadow hover:bg-gray-50 cursor-pointer"
-            onClick={() => go(t.path)}
+            onClick={() => go(t.key, t.path)}
           >
             <h2 className="text-xl font-semibold">{t.label}</h2>
           </div>

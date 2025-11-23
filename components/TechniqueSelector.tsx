@@ -6,7 +6,7 @@ type Props = {
 const TECHS = [
   { key: 'zero_shot', label: 'Zero-shot' },
   { key: 'few_shot', label: 'Few-shot' },
-  { key: 'cot', label: 'Chain-of-Thought' }
+  { key: 'chain_of_thought', label: 'Chain-of-Thought' }
 ];
 
 export default function TechniqueSelector({ selected, onSelect }: Props) {
