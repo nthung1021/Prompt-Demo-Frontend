@@ -33,17 +33,17 @@
 }
 
 .chat-container {
-  @apply flex-1 min-w-full mx-auto grid grid-cols-3 gap-6 p-8 m-8;
+  @apply flex-1 min-w-full mx-auto grid grid-cols-2 gap-6 p-8 m-8;
 }
 
 /* left column - reasoning / output */
 .output-card {
-  @apply col-span-2 bg-white border border-gray-200 rounded-lg p-6 shadow-sm;
+  @apply bg-white border border-gray-200 rounded-lg p-6 shadow-sm;
 }
 
 /* right column - technique card / info */
 .tech-card {
-  @apply col-span-1 bg-gray-50 border border-gray-200 rounded-lg p-6;
+  @apply bg-gray-50 border border-gray-200 rounded-lg p-6;
 }
 
 /* small meta */
