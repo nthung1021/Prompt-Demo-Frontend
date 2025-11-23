@@ -1,6 +1,3 @@
-// components/TechniqueSelector.tsx
-import React from 'react';
-
 type Props = {
   selected: string | null;
   onSelect: (tech: string) => void;

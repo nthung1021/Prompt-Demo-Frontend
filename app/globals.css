@@ -2,7 +2,7 @@
 
 /* Example custom styling for the message box and cards */
 .app-header {
-  @apply flex flex-col items-center justify-center text-center py-12;
+  @apply flex flex-col items-center justify-center text-center py-20;
 }
 
 .title-large {
@@ -29,11 +29,11 @@
 
 /* Chat layout */
 .chat-layout {
-  @apply min-h-screen bg-white;
+  @apply min-h-screen bg-white flex flex-col;
 }
 
 .chat-container {
-  @apply max-w-6xl mx-auto grid grid-cols-3 gap-6 p-8;
+  @apply flex-1 min-w-full mx-auto grid grid-cols-3 gap-6 p-8 m-8;
 }
 
 /* left column - reasoning / output */
