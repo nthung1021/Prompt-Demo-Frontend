@@ -19,13 +19,11 @@ export default function ChatPage() {
   const [promptShown, setPromptShown] = useState<string | null>(null);
 
   useEffect(() => {
-    const storedInput = sessionStorage.getItem('demo_input') ?? '';
     const storedTech = sessionStorage.getItem('demo_tech');
     if (!storedTech) {
       router.replace('/');
       return;
     }
-    setInputText(storedInput);
     setTech(storedTech);
   }, [router]);
 
@@ -100,25 +98,27 @@ export default function ChatPage() {
             <div className="text-sm text-gray-600">Click "Run" to produce the answer. The left shows the final answer.</div>
           )}
 
-          {loading && <div className="mt-4 text-sm text-gray-500">Generating... (may take a few seconds)</div>}
-
-          {result?.reasoning && (
-            <div className="mt-4">
-              <div className="text-sm font-medium mb-2">REASONING (step-by-step):</div>
-              {/* split reasoning lines */}
-              {result.reasoning.split(/\n+/).map((line, idx) => (
-                <div key={idx} className="reasoning-step">
-                  {line}
-                </div>
-              ))}
-            </div>
-          )}
+          {loading && <div className="mt-4 text-sm text-gray-500">Generating... (may take a few seconds)</div>}     
 
           {result?.finalAnswer && (
             <div className="final-answer">
               <div className="text-sm text-gray-600 mb-2">FINAL ANSWER:</div>
               <div>{result.finalAnswer}</div>
             </div>
+          )}
+                
+          {promptShown && (
+            <details className="mt-4 text-xs text-gray-500">
+              <summary className="cursor-pointer">Show prompt</summary>
+              <pre className="mt-2 whitespace-pre-wrap text-xs p-2 bg-gray-50 border rounded">{promptShown}</pre>
+            </details>
+          )}
+       
+          {result?.raw && (
+            <details className="mt-4 text-xs text-gray-500">
+              <summary className="cursor-pointer">Show raw model response</summary>
+              <pre className="mt-2 whitespace-pre-wrap text-xs">{JSON.stringify(result?.raw ?? {}, null, 2)}</pre>
+            </details>
           )}
         </div>
 
