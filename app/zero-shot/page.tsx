@@ -35,6 +35,7 @@ export default function ChatPage() {
     if (!tech) return;
     setLoading(true);
     setResult(null);
+    setPromptShown(null);
 
     try {
       const resp = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/prompt/run`, {
@@ -83,11 +84,17 @@ export default function ChatPage() {
     }
   };
 
+  const clear = () => {
+    setInputText('');
+    setResult(null);
+    setPromptShown(null);
+  };
+
   return (
     <div className="chat-layout">
       <div className="px-6 py-4 flex items-center gap-4">
         <button className="back-btn" onClick={goBack}>← Back</button>
-        <h2 className="text-xl font-semibold">Technique demo</h2>
+        <h2 className="text-xl font-semibold">Zero-shot Demo</h2>
       </div>
 
       <div className="chat-container">
@@ -132,7 +139,7 @@ export default function ChatPage() {
 
           <div className="mt-4 flex gap-2">
             <button onClick={run} disabled={loading} className="bg-blue-600 text-white px-4 py-2 rounded">Run</button>
-            <button onClick={() => { setPromptShown(null); setResult(null); }} className="px-3 py-2 border rounded">Clear</button>
+            <button onClick={clear} className="px-3 py-2 border rounded">Clear</button>
           </div>
         </div>
       </div>
