@@ -7,6 +7,21 @@ import { useRouter } from 'next/navigation';
 type Example = { text: string; label: string };
 type Result = { finalAnswer?: string; reasoning?: string | null; raw?: any };
 
+// Simple markdown formatter for basic formatting
+const formatMarkdown = (text: string) => {
+  if (!text) return text;
+  
+  return text
+    // Convert **bold** to <strong>bold</strong>
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    // Convert * bullet points to proper list items
+    .replace(/^\s*\*\s+(.+)$/gm, '<li>$1</li>')
+    // Wrap consecutive list items in <ul> tags
+    .replace(/((<li>.*<\/li>\s*)+)/g, '<ul class="list-disc list-inside space-y-1 mt-2">$1</ul>')
+    // Convert line breaks to <br> tags
+    .replace(/\n/g, '<br>');
+};
+
 export default function FewShotPage() {
   const router = useRouter();
   const [task, setTask] = useState('Perform the task shown in examples.');
@@ -192,7 +207,7 @@ export default function FewShotPage() {
         {result && (
           <div className="p-4 border rounded bg-gray-50">
             <h3 className="font-semibold mb-2">Final Answer</h3>
-            <div className="text-lg">{result.finalAnswer}</div>
+            <div className="text-lg" dangerouslySetInnerHTML={{ __html: formatMarkdown(result.finalAnswer || '') }} />
 
             {result.reasoning && (
               <>
