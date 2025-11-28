@@ -27,9 +27,9 @@ export default function HomePage() {
     {
       key: "directional_stimulus",
       label: "Directional Stimulus Prompting",
-      path: "directional-stimulus",
+      path: "/directional-stimulus",
     },
-    { key: "reflextion", label: "Reflextion Prompting", path: "reflextion" },
+    { key: "reflextion", label: "Reflextion Prompting", path: "/reflextion" },
     { key: "rag", label: "Retrieval-Augmented Generation", path: "/rag" },
     { key: "react", label: "ReAct", path: "/react" },
 
