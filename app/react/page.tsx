@@ -25,8 +25,8 @@ const formatMarkdown = (text: string) => {
   if (!text) return text;
   
   return text
-    // Convert **bold** to <strong>bold</strong>
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    // Convert **bold** to <strong>bold</strong> but only for short phrases (< 50 chars)
+    .replace(/\*\*(.{1,50}?)\*\*/g, '<strong>$1</strong>')
     // Convert * bullet points to proper list items
     .replace(/^\s*\*\s+(.+)$/gm, '<li>$1</li>')
     // Wrap consecutive list items in <ul> tags
