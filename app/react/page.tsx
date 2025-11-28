@@ -4,9 +4,19 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import MessageBox from "@/components/MessageBox";
 
+type ReActStep = {
+  thought: string;
+  action: string;
+  actionInput: string;
+  observation?: string;
+};
+
 type Result = {
-  reasoningPaths?: string[];
+  steps?: ReActStep[];
   finalAnswer?: string | null;
+  reasoning?: string | null;
+  completed?: boolean;
+  iterations?: number;
   raw?: any;
 };
 
@@ -25,7 +35,7 @@ const formatMarkdown = (text: string) => {
     .replace(/\n/g, '<br>');
 };
 
-export default function SelfConsistencyPage() {
+export default function ReActPage() {
   const router = useRouter();
   const [inputText, setInputText] = useState("");
   const [tech, setTech] = useState<string | null>(null);
@@ -62,10 +72,10 @@ export default function SelfConsistencyPage() {
             inputText,
             techniques: [tech],
             params: {
-              instruction:
-                "You are solving this problem using self-consistency.",
-              temperature: 0.7, // Higher temp for diversity
-              maxTokens: 1000,
+              maxIterations: 5,
+              toolSpec: "search, calculate, lookup, analyze",
+              temperature: 0.1,
+              maxTokens: 800,
             },
           }),
         }
@@ -77,23 +87,16 @@ export default function SelfConsistencyPage() {
 
       const out = item?.outputs?.[0] ?? null;
 
-      let reasoningPaths = out?.reasoningPaths ?? [];
-      let finalAnswer = out?.finalAnswer ?? null;
-      let raw = out?.raw ?? null;
-
-      // Fallback parsing if backend didn't parse well
-      if ((!reasoningPaths.length || !finalAnswer) && out?.text) {
-        // ... (client side parsing if needed, but backend should handle it)
-        // For now rely on backend
-      }
-
       setResult({
-        reasoningPaths,
-        finalAnswer: finalAnswer ?? out?.text ?? null,
-        raw,
+        steps: out?.steps ?? [],
+        finalAnswer: out?.finalAnswer ?? out?.text ?? null,
+        reasoning: out?.reasoning ?? null,
+        completed: out?.completed ?? false,
+        iterations: out?.iterations ?? 0,
+        raw: out?.raw ?? null,
       });
     } catch (err: any) {
-      console.error("self-consistency run error", err);
+      console.error("react run error", err);
       alert("API error: " + (err?.message ?? "Unknown"));
     } finally {
       setLoading(false);
@@ -112,40 +115,75 @@ export default function SelfConsistencyPage() {
         <button className="back-btn" onClick={goBack}>
           ← Back
         </button>
-        <h2 className="text-xl font-semibold">
-          Self-Consistency Prompting Demo
-        </h2>
+        <h2 className="text-xl font-semibold">ReAct Prompting Demo</h2>
       </div>
 
       <div className="chat-container">
-        {/* Left column: paths & final answer */}
+        {/* Left column: reasoning steps & final answer */}
         <div className="output-card">
           <h3 className="text-lg font-semibold mb-4">
-            Reasoning Paths & Final Answer
+            ReAct Steps & Final Answer
           </h3>
 
           {!result && !loading && (
             <div className="text-sm text-gray-600">
-              Click "Run" to generate multiple reasoning paths and the final
-              consensus answer.
+              Click "Run" to see the ReAct agent reason and act step-by-step to
+              solve the problem. The agent will think, take actions, observe
+              results, and iterate until reaching a conclusion.
             </div>
           )}
 
           {loading && (
             <div className="mt-4 text-sm text-gray-500">
-              Generating multiple paths... (may take a few seconds)
+              Agent is reasoning and acting... (may take a few seconds)
             </div>
           )}
 
-          {result?.reasoningPaths && result.reasoningPaths.length > 0 && (
+          {result?.steps && result.steps.length > 0 && (
             <div className="mt-4 space-y-4">
-              <div className="text-sm font-medium">REASONING PATHS:</div>
-              {result.reasoningPaths.map((path, idx) => (
-                <div key={idx} className="p-3 bg-white border rounded text-sm">
-                  <div className="font-semibold text-gray-500 mb-1">
-                    Path {idx + 1}
+              <div className="text-sm font-medium">
+                REASONING & ACTING STEPS:
+              </div>
+              {result.steps.map((step, idx) => (
+                <div
+                  key={idx}
+                  className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 border-l-4 border-blue-400 rounded text-sm"
+                >
+                  <div className="font-semibold text-blue-800 mb-2">
+                    Step {idx + 1}
                   </div>
-                  <div className="whitespace-pre-wrap">{path}</div>
+                  
+                  {step.thought && (
+                    <div className="mb-2">
+                      <span className="font-medium text-gray-700">
+                        💭 Thought:{" "}
+                      </span>
+                      <span className="text-gray-600">{step.thought}</span>
+                    </div>
+                  )}
+                  
+                  {step.action && (
+                    <div className="mb-2">
+                      <span className="font-medium text-green-700">
+                        🎯 Action:{" "}
+                      </span>
+                      <span className="text-green-600">
+                        {step.action} - {step.actionInput}
+                      </span>
+                    </div>
+                  )}
+                  
+                  {step.observation && (
+                    <div className="mb-2">
+                      <span className="font-medium text-purple-700">
+                        👀 Observation:{" "}
+                      </span>
+                      <div 
+                        className="text-purple-600 inline" 
+                        dangerouslySetInnerHTML={{ __html: formatMarkdown(step.observation) }}
+                      />
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -154,9 +192,29 @@ export default function SelfConsistencyPage() {
           {result?.finalAnswer && (
             <div className="final-answer mt-6">
               <div className="text-sm text-gray-600 mb-2">
-                FINAL ANSWER (Consensus):
+                🎉 FINAL ANSWER:
               </div>
-              <div className="text-lg font-bold" dangerouslySetInnerHTML={{ __html: formatMarkdown(result.finalAnswer) }} />
+              <div 
+                className="text-lg font-bold text-green-800"
+                dangerouslySetInnerHTML={{ __html: formatMarkdown(result.finalAnswer) }}
+              />
+            </div>
+          )}
+
+          {result?.completed !== undefined && (
+            <div className="mt-4 text-sm">
+              <span
+                className={`px-2 py-1 rounded ${
+                  result.completed
+                    ? "bg-green-100 text-green-800"
+                    : "bg-yellow-100 text-yellow-800"
+                }`}
+              >
+                {result.completed ? "✅ Completed" : "⏱️ Incomplete"}
+              </span>
+              <span className="ml-2 text-gray-500">
+                ({result.iterations} iterations)
+              </span>
             </div>
           )}
 
@@ -183,7 +241,19 @@ export default function SelfConsistencyPage() {
 
         {/* Right column: input and controls */}
         <div className="tech-card">
-          <h3 className="text-lg font-semibold">Self-Consistency Demo</h3>
+          <h3 className="text-lg font-semibold">ReAct Prompting Demo</h3>
+
+          <div className="mt-4 text-sm text-gray-600">
+            <p>
+              <strong>ReAct (Reasoning + Acting)</strong> combines reasoning
+              traces and task-specific actions in an interleaved manner,
+              allowing for greater synergy between the two.
+            </p>
+            <p className="mt-2">
+              The agent will think, act, observe, and iterate until it finds a
+              solution.
+            </p>
+          </div>
 
           <div className="mt-4 text-sm">
             <div className="font-medium">Input</div>
@@ -192,7 +262,7 @@ export default function SelfConsistencyPage() {
                 value={inputText}
                 onChange={setInputText}
                 onSubmit={run}
-                placeholder="Enter a problem that requires reasoning..."
+                placeholder="Enter a problem that requires reasoning and action..."
               />
             </div>
           </div>
@@ -203,7 +273,7 @@ export default function SelfConsistencyPage() {
               disabled={loading}
               className="bg-blue-600 text-white px-4 py-2 rounded"
             >
-              {loading ? "Running…" : "Run"}
+              {loading ? "Agent Working…" : "Run"}
             </button>
             <button onClick={clear} className="px-3 py-2 border rounded">
               Clear

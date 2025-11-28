@@ -10,6 +10,21 @@ type Result = {
   raw?: any;
 };
 
+// Simple markdown formatter for basic formatting
+const formatMarkdown = (text: string) => {
+  if (!text) return text;
+  
+  return text
+    // Convert **bold** to <strong>bold</strong>
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    // Convert * bullet points to proper list items
+    .replace(/^\s*\*\s+(.+)$/gm, '<li>$1</li>')
+    // Wrap consecutive list items in <ul> tags
+    .replace(/((<li>.*<\/li>\s*)+)/g, '<ul class="list-disc list-inside space-y-1 mt-2">$1</ul>')
+    // Convert line breaks to <br> tags
+    .replace(/\n/g, '<br>');
+};
+
 export default function ChainOfThoughtPage() {
   const router = useRouter();
   const [inputText, setInputText] = useState('');
@@ -137,7 +152,7 @@ export default function ChainOfThoughtPage() {
           {result?.finalAnswer && (
             <div className="final-answer">
               <div className="text-sm text-gray-600 mb-2">FINAL ANSWER:</div>
-              <div>{result.finalAnswer}</div>
+              <div dangerouslySetInnerHTML={{ __html: formatMarkdown(result.finalAnswer) }} />
             </div>
           )}
 
